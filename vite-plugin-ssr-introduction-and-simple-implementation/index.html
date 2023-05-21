@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>vite-plugin-ssr Introduction and Simple Implementation</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../assets/built/screen.css%3Fv=1323db3a6f.css"
+    />
+
+    <meta
+      name="description"
+      content="Vite is a front-end development tool independently developed by Evan You, the creator of Vue.js. Its most impressive features are its super-fast compilation speed and support for SSR (Server Side…"
+    />
+    <link
+      rel="icon"
+      href="../content/images/size/w256h256/2023/05/nice-1.png"
+      type="image/png"
+    />
+    <link rel="canonical" href="index.html" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+    <meta property="og:site_name" content="YYM&#x27;s blog" />
+    <meta property="og:type" content="article" />
+    <meta
+      property="og:title"
+      content="vite-plugin-ssr Introduction and Simple Implementation"
+    />
+    <meta
+      property="og:description"
+      content="Vite is a front-end development tool independently developed by Evan You, the creator of Vue.js. Its most impressive features are its…"
+    />
+    <meta
+      property="og:url"
+      content="http://localhost:2368/vite-plugin-ssr-introduction-and-simple-implementation/"
+    />
+    <meta
+      property="og:image"
+      content="http://localhost:2368/content/images/v2/resize:fit:1110/0-jomtyemzexut2gwm.png"
+    />
+    <meta
+      property="article:published_time"
+      content="2023-04-24T14:35:32.000Z"
+    />
+    <meta property="article:modified_time" content="2023-05-21T19:51:10.000Z" />
+
+    <meta
+      property="article:publisher"
+      content="https://www.facebook.com/ghost"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="vite-plugin-ssr Introduction and Simple Implementation"
+    />
+    <meta
+      name="twitter:description"
+      content="Vite is a front-end development tool independently developed by Evan You, the creator of Vue.js. Its most impressive features are its…"
+    />
+    <meta
+      name="twitter:url"
+      content="http://localhost:2368/vite-plugin-ssr-introduction-and-simple-implementation/"
+    />
+    <meta
+      name="twitter:image"
+      content="http://localhost:2368/content/images/v2/resize:fit:1110/0-jomtyemzexut2gwm.png"
+    />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="葉又銘 You-Ming Yeh" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="" />
+    <meta name="twitter:site" content="@ghost" />
+    <meta property="og:image:width" content="1110" />
+    <meta property="og:image:height" content="598" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "publisher": {
+          "@type": "Organization",
+          "name": "YYM&#x27;s blog",
+          "url": "http://localhost:2368/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "http://localhost:2368/content/images/2023/05/nice-2.png",
+            "width": 60,
+            "height": 60
+          }
+        },
+        "author": {
+          "@type": "Person",
+          "name": "葉又銘 You-Ming Yeh",
+          "image": {
+            "@type": "ImageObject",
+            "url": "http://localhost:2368/content/images/v2/resize:fill:144:144/1-evkbyqfhjtkiz6zdetn7ga.png",
+            "width": 144,
+            "height": 144
+          },
+          "url": "http://localhost:2368/author/ym911216/",
+          "sameAs": []
+        },
+        "headline": "vite-plugin-ssr Introduction and Simple Implementation",
+        "url": "http://localhost:2368/vite-plugin-ssr-introduction-and-simple-implementation/",
+        "datePublished": "2023-04-24T14:35:32.000Z",
+        "dateModified": "2023-05-21T19:51:10.000Z",
+        "image": {
+          "@type": "ImageObject",
+          "url": "http://localhost:2368/content/images/2023/05/vite.17e50649.svg",
+          "width": 410,
+          "height": 404
+        },
+        "description": "Vite is a front-end development tool independently developed by Evan You, the creator of Vue.js. Its most impressive features are its…",
+        "mainEntityOfPage": "http://localhost:2368/vite-plugin-ssr-introduction-and-simple-implementation/"
+      }
+    </script>
+
+    <meta name="generator" content="Ghost 5.49" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="YYM&#x27;s blog"
+      href="../rss/index.html"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/ghost/portal@~2.32/umd/portal.min.js"
+      data-i18n="false"
+      data-ghost="http://localhost:2368/"
+      data-key="a53cc8e83aa0ca7cfae2898ff1"
+      data-api="http://localhost:2368/ghost/api/content/"
+      crossorigin="anonymous"
+    ></script>
+    <style id="gh-members-styles">
+      .gh-post-upgrade-cta-content,
+      .gh-post-upgrade-cta {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        text-align: center;
+        width: 100%;
+        color: #ffffff;
+        font-size: 16px;
+      }
+
+      .gh-post-upgrade-cta-content {
+        border-radius: 8px;
+        padding: 40px 4vw;
+      }
+
+      .gh-post-upgrade-cta h2 {
+        color: #ffffff;
+        font-size: 28px;
+        letter-spacing: -0.2px;
+        margin: 0;
+        padding: 0;
+      }
+
+      .gh-post-upgrade-cta p {
+        margin: 20px 0 0;
+        padding: 0;
+      }
+
+      .gh-post-upgrade-cta small {
+        font-size: 16px;
+        letter-spacing: -0.2px;
+      }
+
+      .gh-post-upgrade-cta a {
+        color: #ffffff;
+        cursor: pointer;
+        font-weight: 500;
+        box-shadow: none;
+        text-decoration: underline;
+      }
+
+      .gh-post-upgrade-cta a:hover {
+        color: #ffffff;
+        opacity: 0.8;
+        box-shadow: none;
+        text-decoration: underline;
+      }
+
+      .gh-post-upgrade-cta a.gh-btn {
+        display: block;
+        background: #ffffff;
+        text-decoration: none;
+        margin: 28px 0 0;
+        padding: 8px 18px;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .gh-post-upgrade-cta a.gh-btn:hover {
+        opacity: 0.92;
+      }
+    </style>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/ghost/sodo-search@~1.1/umd/sodo-search.min.js"
+      data-key="a53cc8e83aa0ca7cfae2898ff1"
+      data-styles="https://cdn.jsdelivr.net/ghost/sodo-search@~1.1/umd/main.css"
+      data-sodo-search="http://localhost:2368/"
+      crossorigin="anonymous"
+    ></script>
+
+    <link href="http://localhost:2368/webmentions/receive/" rel="webmention" />
+    <script defer src="../public/cards.min.js%3Fv=1323db3a6f"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../public/cards.min.css%3Fv=1323db3a6f.css"
+    />
+    <script
+      defer
+      src="../public/member-attribution.min.js%3Fv=1323db3a6f"
+    ></script>
+    <style>
+      :root {
+        --ghost-accent-color: #2b2b37;
+      }
+    </style>
+  </head>
+  <body
+    class="post-template tag-hash-medium tag-hash-import-2023-05-21-19-26 is-head-middle-logo has-cover"
+  >
+    <div class="viewport">
+      <header id="gh-head" class="gh-head outer">
+        <div class="gh-head-inner inner">
+          <div class="gh-head-brand">
+            <a class="gh-head-logo" href="../index.html">
+              <img
+                src="../content/images/2023/05/nice-2.png"
+                alt="YYM&#x27;s blog"
+              />
+            </a>
+            <button
+              class="gh-search gh-icon-btn"
+              aria-label="Search this site"
+              data-ghost-search
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                width="20"
+                height="20"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+            </button>
+            <button class="gh-burger"></button>
+          </div>
+
+          <nav class="gh-head-menu">
+            <ul class="nav">
+              <li class="nav-home"><a href="../index.html">Home</a></li>
+              <li class="nav-about"><a href="../about/index.html">About</a></li>
+            </ul>
+          </nav>
+
+          <div class="gh-head-actions">
+            <button class="gh-search gh-icon-btn" data-ghost-search>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                width="20"
+                height="20"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+            </button>
+            <div class="gh-head-members">
+              <a
+                class="gh-head-link"
+                href="index.html#/portal/signin"
+                data-portal="signin"
+                >Sign in</a
+              >
+              <a
+                class="gh-head-button"
+                href="index.html#/portal/signup"
+                data-portal="signup"
+                >Subscribe</a
+              >
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="site-content">
+        <main id="site-main" class="site-main">
+          <article
+            class="article post tag-hash-medium tag-hash-import-2023-05-21-19-26 image-small"
+          >
+            <header class="article-header gh-canvas">
+              <div class="article-tag post-card-tags"></div>
+
+              <h1 class="article-title">
+                vite-plugin-ssr Introduction and Simple Implementation
+              </h1>
+
+              <p class="article-excerpt">
+                Vite is a front-end development tool independently developed by
+                Evan You, the creator of Vue.js. Its most impressive features
+                are its…
+              </p>
+
+              <div class="article-byline">
+                <section class="article-byline-content">
+                  <ul class="author-list">
+                    <li class="author-list-item">
+                      <a
+                        href="../author/ym911216/index.html"
+                        class="author-avatar"
+                      >
+                        <img
+                          class="author-profile-image"
+                          src="../content/images/size/w100/v2/resize:fill:144:144/1-evkbyqfhjtkiz6zdetn7ga.png"
+                          alt="葉又銘 You-Ming Yeh"
+                        />
+                      </a>
+                    </li>
+                  </ul>
+
+                  <div class="article-byline-meta">
+                    <h4 class="author-name">
+                      <a href="../author/ym911216/index.html"
+                        >葉又銘 You-Ming Yeh</a
+                      >
+                    </h4>
+                    <div class="byline-meta-content">
+                      <time class="byline-meta-date" datetime="2023-04-24"
+                        >Apr 24, 2023</time
+                      >
+                      <span class="byline-reading-time"
+                        ><span class="bull">&bull;</span> 4 min read</span
+                      >
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <figure class="article-image">
+                <img
+                  srcset="
+                    ../content/images/size/w300/2023/05/vite.17e50649.svg   300w,
+                    ../content/images/size/w600/2023/05/vite.17e50649.svg   600w,
+                    ../content/images/size/w1000/2023/05/vite.17e50649.svg 1000w,
+                    ../content/images/size/w2000/2023/05/vite.17e50649.svg 2000w
+                  "
+                  sizes="(min-width: 1400px) 1400px, 92vw"
+                  src="../content/images/size/w2000/2023/05/vite.17e50649.svg"
+                  alt="vite-plugin-ssr Introduction and Simple Implementation"
+                />
+              </figure>
+            </header>
+
+            <section class="gh-content gh-canvas">
+              <p>
+                Vite is a front-end development tool independently developed by
+                Evan You, the creator of Vue.js. Its most impressive features
+                are its super-fast compilation speed and support for SSR (Server
+                Side Rendering), which is a popular trend in recent years.
+                Today, let’s introd
+              </p>
+              <p>uce the vite-plugin-ssr plugin.</p>
+              <figure class="kg-card kg-image-card">
+                <img
+                  src="../content/images/max/800/1-ozbp8xwkr0q4diuzfw24dw.png"
+                  class="kg-image"
+                  alt
+                  loading="lazy"
+                  width="1440"
+                  height="538"
+                  srcset="
+                    ../content/images/size/w600/max/800/1-ozbp8xwkr0q4diuzfw24dw.png   600w,
+                    ../content/images/size/w1000/max/800/1-ozbp8xwkr0q4diuzfw24dw.png 1000w,
+                    ../content/images/max/800/1-ozbp8xwkr0q4diuzfw24dw.png            1440w
+                  "
+                  sizes="(min-width: 720px) 720px"
+                />
+              </figure>
+              <p>Article structure:</p>
+              <ol>
+                <li>Introduction to vite-plugin-ssr</li>
+                <li>Get Started</li>
+                <li>Project Structure Explanation</li>
+                <li>Deployment</li>
+              </ol>
+              <h3 id="introduction-to-vite-plugin-ssr">
+                Introduction to vite-plugin-ssr
+              </h3>
+              <p>
+                Here’s a sentence from the
+                <a
+                  href="https://vite-plugin-ssr.com/?ref=localhost"
+                  rel="noopener"
+                  >official documentation</a
+                >.
+              </p>
+              <blockquote>
+                <em
+                  >Like Next.js/Nuxt but as do-one-thing-do-it-well Vite
+                  plugin.</em
+                >
+              </blockquote>
+              <p>
+                vite-plugin-ssr is a Vite plugin that supports Server Side
+                Rendering (SSR) like Next.js/Nuxt without requiring any
+                configuration or learning new syntax from developers. It is
+                clearly stated by the official document that they require
+                Zero-config.
+              </p>
+              <p>
+                What is SSR? In simple terms, SSR can generate a complete HTML
+                page on the server-side and inject data into it before sending
+                it to the browser. This can improve page loading speed, enhance
+                search engine optimization (SEO) effects, and improve user
+                experience.
+              </p>
+              <h3 id="get-started">Get Started</h3>
+              <p>
+                Let’s create a project first. The following tutorial will use
+                npm or yarn cli.（or check
+                <a
+                  href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm?ref=localhost"
+                  rel="noopener"
+                  >Node.js</a
+                >
+                ）
+              </p>
+              <p>using npm:</p>
+              <pre><code>npm init vite-plugin-ssr@latest</code></pre>
+              <p>using yarn:</p>
+              <pre><code>yarn create vite-plugin-ssr</code></pre>
+              <p>
+                It will ask you to install packages, choose a project name, and
+                a JavaScript framework.
+              </p>
+              <p>Afterwards, follow its instructions:</p>
+              <pre><code>cd vite-ssr-project
+npm install (or pnpm install / yarn install)
+npm run dev (or pnpm run dev / yarn dev)</code></pre>
+              <figure class="kg-card kg-image-card">
+                <img
+                  src="../content/images/max/800/0-jomtyemzexut2gwm.png"
+                  class="kg-image"
+                  alt
+                  loading="lazy"
+                  width="800"
+                  height="431"
+                  srcset="
+                    ../content/images/size/w600/max/800/0-jomtyemzexut2gwm.png 600w,
+                    ../content/images/max/800/0-jomtyemzexut2gwm.png           800w
+                  "
+                  sizes="(min-width: 720px) 720px"
+                />
+              </figure>
+              <p>
+                This completes the initialization and the local server has been
+                successfully started!
+              </p>
+              <p>
+                Next, we can see the following files and directories under the
+                project directory:├── .node_modules<br />├──
+                package-lock.json<br />├── package.json<br />├── pages<br />│
+                ├── about<br />│ │ ├── code.css<br />│ │ └── index.page.jsx<br />│
+                └── index<br />│ ├── Counter.jsx<br />│ └── index.page.jsx<br />├──
+                renderer<br />│ ├── Link.jsx<br />│ ├── PageShell.css<br />│ ├──
+                PageShell.jsx<br />│ ├── _default.page.client.jsx<br />│ ├──
+                _default.page.server.jsx<br />│ ├── _error.page.jsx<br />│ ├──
+                logo.svg<br />│ └── usePageContext.jsx<br />├── server<br />│
+                └── index.js<br />└── vite.config.js
+              </p>
+              <ul>
+                <li>
+                  <code>.node_modules</code>: This directory stores the packages
+                  and modules you have installed.
+                </li>
+                <li>
+                  <code>package.json</code>: This file is the configuration file
+                  for npm packages and npm scripts. It contains information
+                  about the package such as name, version, dependencies, and
+                  more.
+                </li>
+                <li>
+                  <code>pages</code>: This directory contains a home page and an
+                  about page which Vite will bundle into routes.
+                </li>
+                <li>
+                  <code>renderer</code>: <code>PageShell.jsx</code> serves as
+                  the basis for the entire app (like <code>App.js</code> in
+                  <code>create-react-app</code>) and includes the app's side bar
+                  and contents. <code>_default.page.client.jsx</code>,
+                  <code>_default.page.server.jsx</code>, and
+                  <code>_error.page.jsx</code> are places where the server
+                  requests context.
+                </li>
+                <li>
+                  <code>server</code>: This directory includes
+                  <code>server.js</code>, which is used to start the app
+                  (request HTML and bundle <code>.js</code> files).
+                </li>
+                <li>
+                  <code>vite.config.js</code>: This file is the configuration
+                  file for the Vite tool. For more detailed configuration, refer
+                  to the
+                  <a
+                    href="https://vitejs.dev/config/?ref=localhost"
+                    rel="noopener"
+                    >Vite official website</a
+                  >.
+                </li>
+              </ul>
+              <p>
+                To deploy a project using <code>vite-plugin-ssr</code>, the
+                official documentation provides several methods, but none of
+                them are step-by-step tutorials. It took me a long time to
+                figure out how to deploy
+                <a
+                  href="https://linker-eight.vercel.app/workspace?ref=localhost"
+                  rel="noopener"
+                  >my first Vite project</a
+                >. So, let me explain these methods in detail below.
+              </p>
+              <h3 id="using-github-pages">Using GitHub Pages</h3>
+              <p>
+                GitHub Pages is probably the most commonly used platform for
+                deploying static websites. However, as the name suggests, it
+                cannot handle the SSR feature provided by this plugin.
+              </p>
+              <p>
+                In fact, after running <code>npm run build</code>, there are no
+                static HTML files in “./dist/**”, and currently there is no
+                ready-made package for GitHub Action. We will not discuss the
+                detailed deployment methods for now, but you can refer to
+                <a
+                  href="https://vite-plugin-ssr.com/github-pages?ref=localhost"
+                  rel="noopener"
+                  >the official documentation</a
+                >.
+              </p>
+              <h3 id="using-vercel">Using Vercel</h3>
+              <p>
+                Vercel is a great platform for deploying SSR applications
+                because it allows using a server to fetch render data.
+                <a
+                  href="https://github.com/brillout/vite-plugin-ssr_vercel?ref=localhost"
+                  rel="noopener"
+                  >This repo</a
+                >
+                provides a detailed explanation of how to deploy your project
+                using Vercel. In summary, the following steps need to be taken:
+              </p>
+              <ol>
+                <li>
+                  Create a
+                  <a href="https://vercel.com/?ref=localhost" rel="noopener"
+                    >Vercel</a
+                  >
+                  account.
+                </li>
+                <li>
+                  Push your project to GitHub and import the repo to Vercel.
+                </li>
+                <li>Set up deployment configuration:</li>
+              </ol>
+              <ul>
+                <li>
+                  <code>FRAMEWORK PRESET</code>：Select “Vite” (although it may
+                  already be the default)
+                </li>
+                <li>
+                  <code>OUTPUT DIRECTORY</code>：Change to
+                  <code>dist/client</code>
+                </li>
+              </ul>
+              <p>4. Copy the following files from this repo to your project.</p>
+              <p>
+                5. Remember that Vercel will automatically redeploy your project
+                every time you push changes to Git.
+              </p>
+              <blockquote>
+                If you are still having trouble, you can consider using
+                <a
+                  href="https://github.com/brillout/vite-plugin-ssr_vercel?ref=localhost"
+                  rel="noopener"
+                  >this repo</a
+                >
+                as a starting point for your project.
+              </blockquote>
+              <h3 id="epilogue">Epilogue</h3>
+              <p>That’s the introduction to vite-plugin-ssr!</p>
+              <p>
+                In fact, I have less than a year of website development
+                experience, and I haven’t used many development tools. I think
+                compared to create-react-app, Vite is superior in terms of
+                compile and build speed, as well as various features, which
+                significantly improves development speed.
+              </p>
+              <p>
+                However, rare issues may occur during development (such as
+                integration issues with some packages), and errors can only be
+                checked through the browser. But if you are an experienced
+                developer, these problems should not be a big challenge for you!
+              </p>
+              <p>
+                If you have any questions, feel free to email me. If you are
+                interested in learning more about me, you can visit
+                <a
+                  href="https://yehyouming.web.app/?ref=localhost"
+                  rel="noopener"
+                  >my personal website.</a
+                >
+              </p>
+            </section>
+          </article>
+        </main>
+
+        <section class="footer-cta outer">
+          <div class="inner">
+            <h2 class="footer-cta-title">Sign up for more like this.</h2>
+            <a class="footer-cta-button" href="index.html#/portal" data-portal>
+              <div class="footer-cta-input">Enter your email</div>
+              <span>Subscribe</span>
+            </a>
+          </div>
+        </section>
+
+        <aside class="read-more-wrap outer">
+          <div class="read-more inner">
+            <article class="post-card post featured no-image">
+              <div class="post-card-content">
+                <a
+                  class="post-card-content-link"
+                  href="../notes-for-javascript-security-vulnerabilities-tutorial-from-freecodecamp-org/index.html"
+                >
+                  <header class="post-card-header">
+                    <div class="post-card-tags">
+                      <span class="post-card-featured"
+                        ><svg
+                          width="16"
+                          height="17"
+                          viewBox="0 0 16 17"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M4.49365 4.58752C3.53115 6.03752 2.74365 7.70002 2.74365 9.25002C2.74365 10.6424 3.29678 11.9778 4.28134 12.9623C5.26591 13.9469 6.60127 14.5 7.99365 14.5C9.38604 14.5 10.7214 13.9469 11.706 12.9623C12.6905 11.9778 13.2437 10.6424 13.2437 9.25002C13.2437 6.00002 10.9937 3.50002 9.16865 1.68127L6.99365 6.25002L4.49365 4.58752Z"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></path>
+                        </svg>
+                        Featured</span
+                      >
+                    </div>
+                    <h2 class="post-card-title">
+                      Notes for JavaScript Security Vulnerabilities Tutorial
+                      from  freeCodeCamp.org
+                    </h2>
+                  </header>
+                  <div class="post-card-excerpt">
+                    Hey! this is the notes for the video JavaScript Security
+                    Vulnerabilities Tutorial — With Code Examples from
+                    freeCodeCamp.org. Hope this…
+                  </div>
+                </a>
+
+                <footer class="post-card-meta">
+                  <time class="post-card-meta-date" datetime="2023-05-21"
+                    >May 21, 2023</time
+                  >
+                  <span class="post-card-meta-length">5 min read</span>
+                </footer>
+              </div>
+            </article>
+
+            <article class="post-card post">
+              <a
+                class="post-card-image-link"
+                href="../2130-maximum-twin-sum-of-a-linked-list-leetcode-notes/index.html"
+              >
+                <img
+                  class="post-card-image"
+                  srcset="
+                    ../content/images/size/w300/2023/05/60e828b528b05b578ee7be6f_5fa8ee0b97a884356c11cd69_meta20image2042.webp   300w,
+                    ../content/images/size/w600/2023/05/60e828b528b05b578ee7be6f_5fa8ee0b97a884356c11cd69_meta20image2042.webp   600w,
+                    ../content/images/size/w1000/2023/05/60e828b528b05b578ee7be6f_5fa8ee0b97a884356c11cd69_meta20image2042.webp 1000w,
+                    ../content/images/size/w2000/2023/05/60e828b528b05b578ee7be6f_5fa8ee0b97a884356c11cd69_meta20image2042.webp 2000w
+                  "
+                  sizes="(max-width: 1000px) 400px, 800px"
+                  src="../content/images/size/w600/2023/05/60e828b528b05b578ee7be6f_5fa8ee0b97a884356c11cd69_meta20image2042.webp"
+                  alt="2130. Maximum Twin Sum of a Linked List | LeetCode Notes"
+                  loading="lazy"
+                />
+              </a>
+
+              <div class="post-card-content">
+                <a
+                  class="post-card-content-link"
+                  href="../2130-maximum-twin-sum-of-a-linked-list-leetcode-notes/index.html"
+                >
+                  <header class="post-card-header">
+                    <div class="post-card-tags"></div>
+                    <h2 class="post-card-title">
+                      2130. Maximum Twin Sum of a Linked List | LeetCode Notes
+                    </h2>
+                  </header>
+                  <div class="post-card-excerpt">
+                    In a linked list of size n, where n is even, the ith node
+                    (0-indexed) of the linked list is known as the twin of the
+                    (n-1-i)th node, if 0…
+                  </div>
+                </a>
+
+                <footer class="post-card-meta">
+                  <time class="post-card-meta-date" datetime="2023-05-17"
+                    >May 17, 2023</time
+                  >
+                  <span class="post-card-meta-length">1 min read</span>
+                </footer>
+              </div>
+            </article>
+
+            <article class="post-card post">
+              <a
+                class="post-card-image-link"
+                href="../2466-count-ways-to-build-good-strings-leetcode-notes/index.html"
+              >
+                <img
+                  class="post-card-image"
+                  srcset="
+                    ../content/images/size/w300/2023/05/60e828b528b05b578ee7be6f_5fa8ee0b97a884356c11cd69_meta20image2042-1.webp   300w,
+                    ../content/images/size/w600/2023/05/60e828b528b05b578ee7be6f_5fa8ee0b97a884356c11cd69_meta20image2042-1.webp   600w,
+                    ../content/images/size/w1000/2023/05/60e828b528b05b578ee7be6f_5fa8ee0b97a884356c11cd69_meta20image2042-1.webp 1000w,
+                    ../content/images/size/w2000/2023/05/60e828b528b05b578ee7be6f_5fa8ee0b97a884356c11cd69_meta20image2042-1.webp 2000w
+                  "
+                  sizes="(max-width: 1000px) 400px, 800px"
+                  src="../content/images/size/w600/2023/05/60e828b528b05b578ee7be6f_5fa8ee0b97a884356c11cd69_meta20image2042-1.webp"
+                  alt="2466. Count Ways To Build Good Strings | LeetCode Notes"
+                  loading="lazy"
+                />
+              </a>
+
+              <div class="post-card-content">
+                <a
+                  class="post-card-content-link"
+                  href="../2466-count-ways-to-build-good-strings-leetcode-notes/index.html"
+                >
+                  <header class="post-card-header">
+                    <div class="post-card-tags"></div>
+                    <h2 class="post-card-title">
+                      2466. Count Ways To Build Good Strings | LeetCode Notes
+                    </h2>
+                  </header>
+                  <div class="post-card-excerpt">
+                    Given the integers zero, one, low, and high, we can
+                    construct a string by starting with an empty string, and
+                    then at each step perform…
+                  </div>
+                </a>
+
+                <footer class="post-card-meta">
+                  <time class="post-card-meta-date" datetime="2023-05-16"
+                    >May 16, 2023</time
+                  >
+                  <span class="post-card-meta-length">2 min read</span>
+                </footer>
+              </div>
+            </article>
+          </div>
+        </aside>
+      </div>
+
+      <footer class="site-footer outer">
+        <div class="inner">
+          <section class="copyright">
+            <a href="../index.html">YYM&#x27;s blog</a> &copy; 2023
+          </section>
+          <nav class="site-footer-nav">
+            <ul class="nav">
+              <li class="nav-sign-up">
+                <a href="index.html#/portal/">Sign up</a>
+              </li>
+            </ul>
+          </nav>
+          <div class="gh-powered-by">
+            <a href="https://ghost.org/" target="_blank" rel="noopener"
+              >Powered by Ghost</a
+            >
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.min.js"
+      integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+      crossorigin="anonymous"
+    ></script>
+    <script src="../assets/built/casper.js%3Fv=1323db3a6f"></script>
+    <script>
+      $(document).ready(function () {
+        // Mobile Menu Trigger
+        $(".gh-burger").click(function () {
+          $("body").toggleClass("gh-head-open");
+        });
+        // FitVids - Makes video embeds responsive
+        $(".gh-content").fitVids();
+      });
+    </script>
+  </body>
+</html>
